@@ -1,13 +1,348 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap");
+
+/***
+    The new CSS reset - version 1.7.3 (last updated 7.8.2022)
+    GitHub page: https://github.com/elad2412/the-new-css-reset
+***/
+
+/*
+    Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
+    - The "symbol *" part is to solve Firefox SVG sprite bug
+ */
+*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+    all: unset;
+    display: revert;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Preferred box-sizing value */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Reapply the pointer cursor for anchor tags */
+a,
+button {
+    cursor: revert;
+}
+
+/* Remove list styles (bullets/numbers) */
+ol,
+ul,
+menu {
+    list-style: none;
+}
+
+/* For images to not be able to exceed their container */
+img {
+    max-width: 100%;
+}
+
+/* removes spacing between cells in tables */
+table {
+    border-collapse: collapse;
+}
+
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+input,
+textarea {
+    -webkit-user-select: auto;
+}
+
+/* revert the 'white-space' property for textarea elements on Safari */
+textarea {
+    white-space: revert;
+}
+
+/* minimum style to allow to style meter element */
+meter {
+    -webkit-appearance: revert;
+    appearance: revert;
+}
+
+/* reset default text opacity of input placeholder */
+::placeholder {
+    color: unset;
+}
+
+/* fix the feature of 'hidden' attribute.
+ display:revert; revert to element instead of attribute */
+:where([hidden]) {
+    display: none;
+}
+
+/* revert for bug in Chromium browsers
+ - fix for the content editable attribute will work properly.
+ - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element*/
+:where([contenteditable]:not([contenteditable="false"])) {
+    -moz-user-modify: read-write;
+    -webkit-user-modify: read-write;
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
+    -webkit-user-select: auto;
+}
+
+/* apply back the draggable feature - exist only in Chromium and Safari */
+:where([draggable="true"]) {
+    -webkit-user-drag: element;
+}
+
+:root {
+    --color-blue: hsl(220, 98%, 61%);
+    /* ### Light Theme */
+
+    --color-gray-xlt: hsl(0, 0%, 98%);
+    --color-blue-xlt: hsl(236, 33%, 92%);
+    --color-blue-lt: hsl(233, 11%, 84%);
+    --color-blue-drk: hsl(236, 9%, 61%);
+    --color-blue-xdrk: hsl(235, 19%, 35%);
+    --color-white: white;
+
+    /* ### Dark Theme */
+
+    /* --color Very Dark Blue: hsl(235, 21%, 11%)
+--color Very Dark Desaturated Blue: hsl(235, 24%, 19%) (Fondo)
+--color Light Grayish Blue: hsl(234, 39%, 85%)
+--color Light Grayish Blue (hover): hsl(236, 33%, 92%)
+--color Dark Grayish Blue: hsl(234, 11%, 52%)
+--color Very Dark Grayish Blue: hsl(233, 14%, 35%)
+--color Very Dark Grayish Blue: hsl(237, 14%, 26%) */
+}
+
+body {
+    font-family: "Josefin Sans", sans-serif;
+    background-color: hsl(235, 21%, 11%);
+    font-size: 18px;
+    caret-color: hsl(220, 98%, 61%);
+}
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    transition: all 0.1s;
+}
+
+.background img {
+    width: 100%;
+}
+
+.header {
+    width: 35%;
+    margin: 5rem auto 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 46px;
+    font-weight: 700;
+    letter-spacing: 1.25rem;
+}
+
+input[type="text"] {
+    width: 100%;
+}
+
+input::placeholder {
+    color: hsl(234, 11%, 52%);
+}
+
+.theme-toggle {
+    cursor: pointer;
+}
+
+.app-wrapper {
+    width: 35%;
+    margin: 0 auto;
+    color: hsl(234, 39%, 85%);
+}
+
+.new-todo-row {
+    display: flex;
+    background-color: hsl(235, 24%, 19%);
+    height: 4rem;
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 0.3rem;
+    filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.397));
+    transition: all 0.2s;
+}
+
+.new-todo-row:hover {
+    filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.541));
+}
+
+.todo-list {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    background-color: hsl(235, 24%, 19%);
+    width: 100%;
+    border-radius: 0.3rem;
+    filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.397));
+    overflow: hidden;
+}
+
+.todo-row {
+    height: 4rem;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: hsl(235, 24%, 19%);
+    border-bottom: 1px solid hsl(237, 14%, 26%);
+}
+
+.todo {
+    cursor: pointer;
+}
+
+.completed-content {
+    text-decoration: line-through;
+    color: hsl(234, 11%, 52%);
+}
+
+.complete-check {
+    border: 2px solid hsl(237, 14%, 26%);
+    width: 30px;
+    height: 30px;
+    border-radius: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.complete-check:hover {
+    border: 2px solid hsl(220, 98%, 61%);
+}
+.complete-check img {
+    transform: translate(1px, 1px);
+}
+
+.completed-todo {
+    background: linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+}
+
+.delete {
+    margin-left: auto;
+    display: flex;
+    cursor: pointer;
+}
+
+.actions-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    font-size: 14px;
+    color: hsl(234, 11%, 52%);
+}
+
+.filter {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-selected {
+    color: hsl(220, 98%, 61%);
+}
+
+.filter button,
+.clear {
+    cursor: pointer;
+}
+
+.filter button:hover,
+.clear:hover {
+    color: hsl(234, 39%, 85%);
+}
+
+.message {
+    font-size: 14px;
+    width: 35%;
+    text-align: center;
+    margin: 3rem auto;
+    color: hsl(234, 11%, 52%);
+}
+
+.light .background {
+    background-color: var(--color-blue-xlt);
+}
+
+.light .new-todo-row {
+    background-color: var(--color-gray-xlt);
+}
+
+.light input {
+    color: var(--color-blue-xdrk);
+}
+
+.light .todo-list {
+    background-color: var(--color-gray-xlt);
+}
+
+.light .todo-row {
+    background-color: var(--color-gray-xlt);
+    border-bottom: 1px solid var(--color-blue-lt);
+    color: var(--color-blue-xdrk);
+}
+
+.light .completed-content {
+    color: var(--color-blue-lt);
+}
+
+.light .complete-check {
+    border: 1px solid var(--color-blue-xlt);
+}
+
+.light .filter button:hover,
+.light .clear:hover {
+    color: var(--color-blue-xdrk);
+}
+
+.filter-mobile {
+    display: none;
+}
+
+@media only screen and (max-width: 1250px) {
+    .header {
+        width: 50%;
+    }
+
+    .app-wrapper {
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .header {
+        width: 90%;
+    }
+
+    .app-wrapper {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .filter-mobile {
+        width: 90%;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        background-color: hsl(235, 24%, 19%);
+        height: 4rem;
+        width: 100%;
+        padding: 1rem 2rem;
+        margin-top: 1rem;
+        border-radius: 0.3rem;
+        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.397));
+        transition: all 0.2s;
+    }
+
+    .filter {
+        display: none;
+    }
 }
