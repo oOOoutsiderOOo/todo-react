@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, useRef, MutableRefObject } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import type { TodoListType } from "../App";
 import { Reorder } from "framer-motion";
 import useWindowDimensions from "../hooks/useWindowDimensions";
@@ -6,7 +6,7 @@ import useWindowDimensions from "../hooks/useWindowDimensions";
 const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStateAction<TodoListType>> }) => {
     const [filter, setFilter] = useState<"all" | true | false>("all");
     const [hover, setHover] = useState(-1);
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
 
     return (
         <>

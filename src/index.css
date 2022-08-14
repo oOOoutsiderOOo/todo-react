@@ -342,6 +342,11 @@ input::placeholder {
         transition: all 0.2s;
     }
 
+    .light .filter-mobile {
+        background-color: var(--color-gray-xlt);
+        color: hsl(234, 11%, 52%);
+    }
+
     .filter {
         display: none;
     }

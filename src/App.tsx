@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
 import useWindowDimensions from "./hooks/useWindowDimensions";
 
@@ -17,7 +17,7 @@ const App: FC = () => {
     const [newTodo, setNewTodo] = useState("");
     const [fetching, setFetching] = useState(true);
     const [theme, setTheme] = useState("");
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
 
     useEffect(() => {
         const initFetch = async () => {
