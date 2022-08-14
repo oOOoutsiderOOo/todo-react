@@ -40,7 +40,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
                         )
                 )}
                 <div className="actions-row">
-                    <div className="left">{props.todoList.length + " items left"}</div>
+                    <div className="left">{props.todoList.length + (props.todoList.length === 1 ? " item left" : " items left")}</div>
                     <div className="filter">
                         <button className={filter === "all" ? "all filter-selected" : "all"} onClick={() => setFilter("all")}>
                             All
