@@ -297,6 +297,10 @@ input::placeholder {
     border: 1px solid var(--color-blue-xlt);
 }
 
+.light .complete-check:hover {
+    border: 1px solid hsl(220, 98%, 61%);
+}
+
 .light .filter button:hover,
 .light .clear:hover {
     color: var(--color-blue-xdrk);

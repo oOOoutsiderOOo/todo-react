@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import type { TodoListType } from "../App";
-import { Reorder } from "framer-motion";
+import { motion, Reorder } from "framer-motion";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStateAction<TodoListType>> }) => {
@@ -31,11 +31,12 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
                                     {item.completed && <img src="/images/icon-check.svg" alt="check completed" />}
                                 </div>
                                 <div className={item.completed === true ? "todo completed-content" : "todo"}>{item.content}</div>
-                                <div
+                                <motion.div
                                     className="delete"
-                                    onClick={() => props.setTodoList(props.todoList.filter(todo => props.todoList.indexOf(todo) !== index))}>
+                                    onClick={() => props.setTodoList(props.todoList.filter(todo => props.todoList.indexOf(todo) !== index))}
+                                    whileHover={{ scale: 1.2 }}>
                                     {(hover === index || width < 1250) && <img src="/images/icon-cross.svg" alt="delete" />}
-                                </div>
+                                </motion.div>
                             </Reorder.Item>
                         )
                 )}
