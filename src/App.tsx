@@ -1,31 +1,43 @@
+import axios from "axios";
 import { nanoid } from "nanoid";
 import { FC, useEffect, useState } from "react";
 import TodoList from "./components/TodoList";
 import useWindowDimensions from "./hooks/useWindowDimensions";
+import { useQuery, QueryClientProvider, useMutation, QueryClient, useQueryClient } from "@tanstack/react-query";
 
-let initTodos: TodoListType = [{ id: "1", content: "Create my first todo", completed: false }];
+let initTodos: TodoListType = [{ id: "1", content: "Create my first todo", completed: false, displayOrder: 1 }];
 
 export type Todo = {
     id: string;
     content: string;
     completed: boolean;
+    displayOrder: number;
 };
 export type TodoListType = Todo[];
 
 const App: FC = () => {
-    const [todoList, setTodoList] = useState<TodoListType>([]);
+    const [todoListo, setTodoList] = useState<TodoListType>([]);
     const [newTodo, setNewTodo] = useState("");
     const [fetching, setFetching] = useState(true);
     const [theme, setTheme] = useState("");
     const { width } = useWindowDimensions();
+    const queryClient = useQueryClient();
+
+    const {
+        data: todoList,
+        isLoading,
+        isError,
+    } = useQuery(["todos"], async () => {
+        return await axios
+            .get("http://localhost:3000/getTodos")
+            .then(res => (res.data as TodoListType).sort((a, b) => a.displayOrder - b.displayOrder));
+    });
 
     useEffect(() => {
         const initFetch = async () => {
-            !localStorage.getItem("todos") && localStorage.setItem("todos", JSON.stringify(initTodos));
             !localStorage.getItem("theme") && localStorage.setItem("theme", "dark");
-            let response: TodoListType = JSON.parse(localStorage.getItem("todos") as string);
+            /*  (await axios.post("http://localhost:3000/newTodo", { content: initTodos[0].content, dOrder: initTodos[0].displayOrder })); */
             let fetchedTheme = localStorage.getItem("theme") as string;
-            setTodoList(response);
             setTheme(fetchedTheme);
         };
 
@@ -35,12 +47,24 @@ const App: FC = () => {
     }, []);
 
     useEffect(() => {
-        fetching === false && localStorage.setItem("todos", JSON.stringify(todoList));
-    }, [todoList]);
-
-    useEffect(() => {
         fetching === false && localStorage.setItem("theme", theme);
     }, [theme]);
+
+    const postNewTodo = useMutation(
+        newTodo => {
+            let sortedList = (todoList as TodoListType).map(todo => todo);
+            sortedList.reverse();
+            let newDOrder = sortedList[0] ? sortedList[0].displayOrder : 0;
+
+            return axios.post("http://localhost:3000/newTodo", { content: newTodo, dOrder: newDOrder + 1 });
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["todos"]);
+                setNewTodo("");
+            },
+        }
+    );
 
     return (
         <div className={theme !== "" ? (theme === "dark" ? "" : "light") : undefined}>
@@ -66,17 +90,16 @@ const App: FC = () => {
                         value={newTodo}
                         placeholder="Create a new todo..."
                         onChange={e => setNewTodo(e.target.value)}
-                        onKeyDown={e => {
+                        onKeyDown={async e => {
                             if (e.key === "Enter") {
                                 if (newTodo !== "") {
-                                    setTodoList([...todoList, { id: nanoid(10), content: newTodo, completed: false }]);
-                                    setNewTodo("");
+                                    postNewTodo.mutate(newTodo as any);
                                 }
                             }
                         }}
                     />
                 </div>
-                <TodoList todoList={todoList} setTodoList={setTodoList} />
+                {!isLoading && !isError && <TodoList todoList={todoList} setTodoList={setTodoList} />}
             </div>
             <div className="message">Drag and drop to reorder list</div>
         </div>
