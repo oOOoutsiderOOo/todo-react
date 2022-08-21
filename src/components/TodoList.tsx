@@ -14,7 +14,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
     const updateTodo = useMutation(
         async (data: Todo): Promise<Todo> => {
             return await axios
-                .post("http://localhost:3000/updateTodo", {
+                .post("/updateTodo", {
                     id: ~~data.id,
                     completed: data.completed === true ? false : true,
                     content: data.content,
@@ -41,7 +41,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
 
     const clearCompleted = useMutation(
         async () => {
-            return axios.get("http://localhost:3000/clearCompleted");
+            return axios.get("/clearCompleted");
         },
         {
             onSuccess: () => {
@@ -54,7 +54,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
 
     const deleteTodo = useMutation(
         id => {
-            return axios.post("http://localhost:3000/deleteTodo", {
+            return axios.post("/deleteTodo", {
                 id: ~~id,
             });
         },
@@ -71,7 +71,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
 
     const updateOrder = useMutation(async (data: { id: string; dOrder: number }): Promise<[]> => {
         return await axios
-            .post("http://localhost:3000/updatePositions", {
+            .post("/updatePositions", {
                 id: ~~data.id,
                 dOrder: data.dOrder,
             })

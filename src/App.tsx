@@ -22,6 +22,7 @@ const App: FC = () => {
     const [theme, setTheme] = useState("");
     const { width } = useWindowDimensions();
     const queryClient = useQueryClient();
+    axios.defaults.baseURL = process.env.REACT_APP_AXIOS_BASE_URL;
 
     const {
         data: todoList,
@@ -30,9 +31,7 @@ const App: FC = () => {
     } = useQuery(
         ["todos"],
         async () => {
-            return await axios
-                .get("http://localhost:3000/getTodos")
-                .then(res => (res.data as TodoListType).sort((a, b) => a.displayOrder - b.displayOrder));
+            return await axios.get("/getTodos").then(res => (res.data as TodoListType).sort((a, b) => a.displayOrder - b.displayOrder));
         },
         {
             onError: error => {
