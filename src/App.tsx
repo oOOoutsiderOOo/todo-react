@@ -27,11 +27,19 @@ const App: FC = () => {
         data: todoList,
         isLoading,
         isError,
-    } = useQuery(["todos"], async () => {
-        return await axios
-            .get("http://localhost:3000/getTodos")
-            .then(res => (res.data as TodoListType).sort((a, b) => a.displayOrder - b.displayOrder));
-    });
+    } = useQuery(
+        ["todos"],
+        async () => {
+            return await axios
+                .get("http://localhost:3000/getTodos")
+                .then(res => (res.data as TodoListType).sort((a, b) => a.displayOrder - b.displayOrder));
+        },
+        {
+            onError: error => {
+                console.log(error);
+            },
+        }
+    );
 
     useEffect(() => {
         const initFetch = async () => {
