@@ -8,7 +8,6 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStateAction<TodoListType>> }) => {
     const [filter, setFilter] = useState<"all" | true | false>("all");
     const [hover, setHover] = useState(-1);
-    const [reorderedList, setReorderedList] = useState<TodoListType>([]);
     const { width } = useWindowDimensions();
     const queryClient = useQueryClient();
 
@@ -35,6 +34,7 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
                 let updatedList = props.todoList.map(todo => todo);
                 updatedList.splice(updatedTodoIndex, 1, updatedTodo);
                 queryClient.setQueryData(["todos"], updatedList);
+                queryClient.invalidateQueries(["todo"]);
             },
         }
     );
@@ -78,15 +78,18 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
             .then(data => data.data);
     });
 
-    const handleReorder = (reordered: TodoListType) => {
-        queryClient.setQueryData(["todos"], reordered);
-        setReorderedList(reordered);
-        reordered.forEach((todo, i) => updateOrder.mutate({ id: todo.id, dOrder: i }));
+    const manageUpdateOrder = () => {
+        let reorderedList: TodoListType = queryClient.getQueryData(["todos"]) as TodoListType;
+        reorderedList.forEach((todo, i) => updateOrder.mutate({ id: todo.id, dOrder: i }));
     };
 
     return (
         <>
-            <Reorder.Group className="todo-list" axis="y" values={props.todoList} onReorder={reordered => handleReorder(reordered)}>
+            <Reorder.Group
+                className="todo-list"
+                axis="y"
+                values={props.todoList}
+                onReorder={reordered => queryClient.setQueryData(["todos"], reordered)}>
                 {props.todoList
                     /* .sort((a, b) => a.displayOrder - b.displayOrder) */
                     .map(
@@ -97,7 +100,8 @@ const TodoList = (props: { todoList: TodoListType; setTodoList: Dispatch<SetStat
                                     key={item.id}
                                     value={item}
                                     onHoverStart={() => setHover(index)}
-                                    onHoverEnd={() => setHover(-1)}>
+                                    onHoverEnd={() => setHover(-1)}
+                                    onDragEnd={() => manageUpdateOrder()}>
                                     <div
                                         className={item.completed ? "complete-check completed-todo" : "complete-check"}
                                         onClick={() => {
